@@ -195,3 +195,85 @@ def modelo(X_train,y_train,X_test,y_test,y_data,X_data,data_t):
     display(added_rows)           
     # print(added_rows.to_string(index=False))  
 
+    # Entrenar de nuevo el modelo con los datos aumentados
+    X_data = df["textos"]
+    y_data = df["labels"]
+    from sklearn.model_selection import train_test_split
+    X_train, X_test, y_train, y_test = train_test_split(
+        X_data, y_data, test_size=0.3, random_state=42, stratify=y_data
+    )
+    pipeline.fit(X_train, y_train)
+    y_pred = pipeline.predict(X_test)
+    report_reentreno=classification_report(y_new, y_pred_new, output_dict=True)
+    print(classification_report(y_test, y_pred))
+
+    from collections import Counter
+
+    # Ver la nueva distribución
+    conteo_actualizado = Counter(y_data)
+    print(conteo_actualizado)
+
+    from sklearn.metrics import classification_report
+    import pandas as pd
+    from IPython.display import display
+
+    # === Crear DataFrames a partir de los reportes ===
+    df_orig = pd.DataFrame(report_aum).transpose()
+    df_reent = pd.DataFrame(report_reentreno).transpose()
+
+    # === Seleccionar solo las clases y métricas principales ===
+    clases = [col for col in df_orig.index if col.isdigit()]  # etiquetas numéricas (ej: '1', '3', '4')
+
+    # === Tabla global (macro averages) ===
+    tabla_global = pd.DataFrame({
+        'Métrica': ['Accuracy', 'Precision (macro)', 'Recall (macro)', 'F1-score (macro)'],
+        'Modelo original': [
+            report_aum['accuracy'],
+            report_aum['macro avg']['precision'],
+            report_aum['macro avg']['recall'],
+            report_aum['macro avg']['f1-score']
+        ],
+        'Modelo reentrenado': [
+            report_reentreno['accuracy'],
+            report_reentreno['macro avg']['precision'],
+            report_reentreno['macro avg']['recall'],
+            report_reentreno['macro avg']['f1-score']
+        ]
+    }).round(3)
+
+    # === Tabla por clase ===
+    tabla_clases = pd.DataFrame({
+        'Clase': clases,
+        'Precisión original': [df_orig.loc[c, 'precision'] for c in clases],
+        'Precisión reentrenado': [df_reent.loc[c, 'precision'] for c in clases],
+        'Recall original': [df_orig.loc[c, 'recall'] for c in clases],
+        'Recall reentrenado': [df_reent.loc[c, 'recall'] for c in clases],
+        'F1 original': [df_orig.loc[c, 'f1-score'] for c in clases],
+        'F1 reentrenado': [df_reent.loc[c, 'f1-score'] for c in clases]
+    }).round(3)
+
+    # === Aplicar estilos visuales ===
+    estilo_global = tabla_global.style.set_table_styles([
+        {'selector': 'th', 'props': [('background-color', '#003366'),
+                                    ('color', 'white'),
+                                    ('text-align', 'center'),
+                                    ('font-weight', 'bold')]},
+        {'selector': 'td', 'props': [('text-align', 'center'),
+                                    ('padding', '6px')]},
+        {'selector': 'tr:nth-child(even)', 'props': [('background-color', '#f2f2f2')]}
+    ]).set_caption("Comparación de métricas globales entre el modelo original y el reentrenado")
+
+    estilo_clases = tabla_clases.style.set_table_styles([
+        {'selector': 'th', 'props': [('background-color', '#004c99'),
+                                    ('color', 'white'),
+                                    ('text-align', 'center'),
+                                    ('font-weight', 'bold')]},
+        {'selector': 'td', 'props': [('text-align', 'center'),
+                                    ('padding', '6px')]},
+        {'selector': 'tr:nth-child(even)', 'props': [('background-color', '#f9f9f9')]}
+    ]).set_caption("Comparación por clase (ODS 1, ODS 3, ODS 4)")
+
+    # === Mostrar ambas tablas ===
+    display(estilo_global)
+    display(estilo_clases)
+
