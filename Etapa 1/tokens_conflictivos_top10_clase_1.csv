@@ -1,0 +1,21 @@
+clase,tipo,rank,token,delta_mean_tfidf
+1,errores>aciertos,1,servicios,0.056708406533917934
+1,errores>aciertos,2,politicas,0.04962177818266077
+1,errores>aciertos,3,estrategia,0.04140500712286317
+1,errores>aciertos,4,transmision,0.035484761850778965
+1,errores>aciertos,5,plazo,0.0324075368629385
+1,errores>aciertos,6,demostrado,0.03212084755374585
+1,errores>aciertos,7,consejos,0.0319508828417227
+1,errores>aciertos,8,estudiante,0.03113063098753151
+1,errores>aciertos,9,cinco anos,0.030264643351330455
+1,errores>aciertos,10,fomento,0.029819408669821745
+1,aciertos>errores,1,pobreza,0.07505823210803382
+1,aciertos>errores,2,pobres,0.03651318321035653
+1,aciertos>errores,3,hogares,0.030406816242169996
+1,aciertos>errores,4,ingresos,0.02910079098661834
+1,aciertos>errores,5,infantil,0.02615270476672338
+1,aciertos>errores,6,privacion,0.025274429903085274
+1,aciertos>errores,7,hogar,0.02217050556900223
+1,aciertos>errores,8,pobreza infantil,0.020355445135854276
+1,aciertos>errores,9,ciento,0.019724820525851193
+1,aciertos>errores,10,crecimiento,0.01945757409046247

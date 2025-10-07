@@ -1,0 +1,21 @@
+clase,tipo,rank,token,delta_mean_tfidf
+3,errores>aciertos,1,buen,0.05141246606586316
+3,errores>aciertos,2,ninos,0.051042872173896255
+3,errores>aciertos,3,hogares,0.047744650962311376
+3,errores>aciertos,4,embarazo,0.04406476514381385
+3,errores>aciertos,5,riqueza,0.038097740898560405
+3,errores>aciertos,6,of,0.03798639149344306
+3,errores>aciertos,7,drogas,0.03697999114236637
+3,errores>aciertos,8,and ten,0.036794820688721246
+3,errores>aciertos,9,pobres,0.03639511942537019
+3,errores>aciertos,10,ten,0.036164106081627456
+3,aciertos>errores,1,salud,0.04556454585273731
+3,aciertos>errores,2,atencion,0.04192772999954229
+3,aciertos>errores,3,servicios,0.03280725070802325
+3,aciertos>errores,4,pacientes,0.021553713132618894
+3,aciertos>errores,5,atencion primaria,0.01931011505959953
+3,aciertos>errores,6,medicos,0.018204897665873042
+3,aciertos>errores,7,nacional,0.017830008631721964
+3,aciertos>errores,8,sistema,0.016315067293121818
+3,aciertos>errores,9,paises,0.014714931758921109
+3,aciertos>errores,10,calidad,0.014537543044722049
