@@ -71,6 +71,17 @@ En el repositorio: https://github.com/sofiavasqueztoro/Proyecto_Grupo18.git
 O en este link: https://www.canva.com/design/DAGyrtD3Y_Y/zrkBFva_3LasQTYU5w3y7w/edit?utm_content=DAGyrtD3Y_Y&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
 
 ## Etapa 2:
+## Sección 1. (20%) Aumentación de datos y reentrenamiento del modelo 
+Se encuentra en el repositorio .....
+
+## Sección 2. (15%) Proceso de automatización del proceso de preparación de datos, construcción del modelo, persistencia del modelo y acceso por medio de API:
+...
+
+## Sección 3. (25%) Desarrollo de la aplicación y justificación. 
+...
+
+## Sección 4. (20%) Resultados. 
+...
 
 ## Sección 5. (8%) Trabajo en equipo
 
