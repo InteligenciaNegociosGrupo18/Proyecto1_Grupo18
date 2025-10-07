@@ -116,5 +116,8 @@ if __name__ == "__main__":
     print(confusion_matrix(y_test, preds))
 
     
-    joblib.dump(pipeline, '/pipeline_model.joblib')
-    print("\nModelo guardado exitosamente en ./assets/pipeline_model.joblib")
+    import os
+    model_path = os.path.join(os.path.dirname(__file__), "pipeline_model.joblib")
+    joblib.dump(pipeline, model_path)
+    print(f"\nModelo guardado exitosamente en: {model_path}")
+
