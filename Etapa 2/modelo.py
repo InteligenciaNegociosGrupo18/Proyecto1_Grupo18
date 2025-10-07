@@ -1,13 +1,14 @@
-from networkx import display
-from sklearn.pipeline import Pipeline
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import classification_report, confusion_matrix, ConfusionMatrixDisplay
-import pandas as pd
-import numpy as np
-from TextPreprocessor import TextPreprocessor
-import matplotlib.pyplot as plt
+
 
 def modelo(X_train,y_train,X_test,y_test,y_data,X_data,data_t):
+    from networkx import display
+    from sklearn.pipeline import Pipeline
+    from sklearn.ensemble import RandomForestClassifier
+    from sklearn.metrics import classification_report, confusion_matrix, ConfusionMatrixDisplay
+    import pandas as pd
+    import numpy as np
+    from TextPreprocessor import TextPreprocessor
+    import matplotlib.pyplot as plt
     #Definimos el pipeline que vamos a utilizar con Random Forest
     pipeline = Pipeline([
         ('vectorizer', TextPreprocessor(max_features=5000, ngram_range=(1,2))),
@@ -56,7 +57,10 @@ def modelo(X_train,y_train,X_test,y_test,y_data,X_data,data_t):
     plt.show()
 
     pipeline.fit(X_train, y_train)
-    datos_etapa2 = pd.read_excel("Datos_etapa 2.xlsx")
+    import os
+    path = os.path.join(os.path.dirname(__file__), "Datos_etapa 2.xlsx")
+    datos_etapa2 = pd.read_excel(path)
+    #datos_etapa2 = pd.read_excel("Datos_etapa 2.xlsx")
 
     X_new = datos_etapa2["textos"]
     y_new = datos_etapa2["labels"]
@@ -97,16 +101,21 @@ def modelo(X_train,y_train,X_test,y_test,y_data,X_data,data_t):
     import os
     import random
     import json
-    import openai
+    #import openai
+    from openai import OpenAI
+
 
     # Configura tu API Key
     secret = ""
-    openai.api_key = secret
+    #openai.api_key = secret
 
-    RUTA = "Datos_proyecto.xlsx"  
+    import os
+    path = os.path.join(os.path.dirname(__file__), "Datos_etapa 2.xlsx")
+    df = pd.read_excel(path)
+    #RUTA = "Datos_proyecto.xlsx"  
     TEXTO = "textos"                   
     ODS   = "labels"   
-    df = pd.read_excel(RUTA)
+    #df = pd.read_excel(RUTA)
 
     minoritaria = df[ODS].value_counts().idxmin()
     semillas = (
@@ -131,7 +140,7 @@ def modelo(X_train,y_train,X_test,y_test,y_data,X_data,data_t):
 
     # Prompt para generar datos sintéticos
     prompt = f"""
-    Genera 20 opiniones ciudadanas breves (1–2 oraciones), en español de Colombia,
+    Genera 200 opiniones ciudadanas breves (1–2 oraciones), en español de Colombia,
     realistas y respetuosas, sobre problemáticas locales mapeadas SOLO al ODS 1.
     Definición de cada ODS: ODS 1: Fin de la pobreza, ODS 3: Salud y Bienestar, ODS 4: Educación de calidad
     Requisitos:
@@ -144,16 +153,16 @@ def modelo(X_train,y_train,X_test,y_test,y_data,X_data,data_t):
     Ejemplos de nuestro dataset (NO copiar, solo inspirarse):
     {ejemplos if ejemplos else '- (sin ejemplos de contexto)'}
     """
-
+    client = OpenAI(api_key=secret)
     # Llamada a la API moderna de OpenAI
-    response = openai.ChatCompletion.create(
-        model="gpt-4o-mini",  # modelo que se debe usar
-        messages=[
-            {"role": "system", "content": "Eres un generador de datos sintéticos."},
-            {"role": "user", "content": prompt}
-        ],
-        temperature=0.7
-    )
+    response = client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=[
+        {"role": "system", "content": "Eres un generador de datos sintéticos."},
+        {"role": "user", "content": prompt}
+    ],
+    temperature=0.7
+)
 
     # Procesar la respuesta
     raw = response.choices[0].message.content
@@ -182,7 +191,7 @@ def modelo(X_train,y_train,X_test,y_test,y_data,X_data,data_t):
     )
 
     print(f"Nuevas filas agregadas: {len(added_rows)}")
-    # En notebook, puedes mostrar todas o una vista rápida:
-    display(added_rows)           # muestra bonito en Jupyter
-    # print(added_rows.to_string(index=False))  # si prefieres en texto plano
+    
+    display(added_rows)           
+    # print(added_rows.to_string(index=False))  
 

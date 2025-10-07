@@ -1,7 +1,7 @@
 from preprocessor import main_preprocessor
 from modelo import modelo
 
-import joblib
+
 
 def main():
     # Llamar al preprocesador completo

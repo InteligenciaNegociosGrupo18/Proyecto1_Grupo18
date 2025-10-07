@@ -1,29 +1,4 @@
-from sklearn.base import BaseEstimator, TransformerMixin
-import re, unicodedata
-import inflect
-from nltk.corpus import stopwords
-from nltk.tokenize import word_tokenize
-from sklearn.feature_extraction.text import TfidfVectorizer
-# Instalación de librerias
-import pandas as pd
-import numpy as np
-import sys
-import re, string, unicodedata
-import contractions
-import inflect
-from nltk import word_tokenize, sent_tokenize
-from nltk.corpus import stopwords
-from nltk.stem import LancasterStemmer, WordNetLemmatizer
 
-from sklearn.model_selection import train_test_split,GridSearchCV
-from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer, HashingVectorizer
-from sklearn.pipeline import Pipeline, FeatureUnion
-from sklearn.svm import SVC
-from sklearn.ensemble import BaggingClassifier, RandomForestClassifier, AdaBoostClassifier
-from sklearn.naive_bayes import BernoulliNB
-from sklearn.metrics import classification_report, confusion_matrix
-from sklearn.base import BaseEstimator, ClassifierMixin
-import matplotlib.pyplot as plt
 
 def main_preprocessor():
 
@@ -34,9 +9,37 @@ def main_preprocessor():
     subprocess.check_call([sys.executable, "-m", "pip", "install", "contractions"])
     subprocess.check_call([sys.executable, "-m", "pip", "install", "inflect"])
     subprocess.check_call([sys.executable, "-m", "pip", "install", "scikit-plot"])
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "--upgrade", "joblib", "loky"])
     subprocess.check_call([sys.executable, "-m", "pip", "install", "nltk"])
     subprocess.check_call([sys.executable, "-m", "pip", "install", "openpyxl"])
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "networkx"])
+   
+    
+    from sklearn.base import BaseEstimator, TransformerMixin
+    import re, unicodedata
+    import inflect
+    from nltk.corpus import stopwords
+    from nltk.tokenize import word_tokenize
+    from sklearn.feature_extraction.text import TfidfVectorizer
+    # Instalación de librerias
+    import pandas as pd
+    import numpy as np
+    import sys
+    import re, string, unicodedata
+    import contractions
+    import inflect
+    from nltk import word_tokenize, sent_tokenize
+    from nltk.corpus import stopwords
+    from nltk.stem import LancasterStemmer, WordNetLemmatizer
+
+    from sklearn.model_selection import train_test_split,GridSearchCV
+    from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer, HashingVectorizer
+    from sklearn.pipeline import Pipeline, FeatureUnion
+    from sklearn.svm import SVC
+    from sklearn.ensemble import BaggingClassifier, RandomForestClassifier, AdaBoostClassifier
+    from sklearn.naive_bayes import BernoulliNB
+    from sklearn.metrics import classification_report, confusion_matrix
+    from sklearn.base import BaseEstimator, ClassifierMixin
+    import matplotlib.pyplot as plt
 
 
     # librería Natural Language Toolkit, usada para trabajar con textos
@@ -55,7 +58,11 @@ def main_preprocessor():
 
     # Uso de la libreria pandas para la lectura de archivos
     #ahora descargamos los datos nuevos de la etapa 2!!!
-    data=pd.read_excel('Datos_proyecto.xlsx')
+    import os
+    path = os.path.join(os.path.dirname(__file__), "Datos_proyecto.xlsx")
+    data = pd.read_excel(path)
+
+    #data=pd.read_excel('Datos_proyecto.xlsx')
     # Asignación a una nueva variable de los datos leidos
     data_t=data
 
