@@ -24,6 +24,7 @@ Objetivo:
 
 Autores: Isabella Caputi - 202122075 Mario Velasquez - 202020502 Sofia Vasquez - 202123910
 
+## Etapa 1:
 ## Sección 1. (20%) Documentación del proceso de aprendizaje automático. 
 Se encuentra en el repositorio ocmo CanvasML_Proyecto1.pdf: https://github.com/sofiavasqueztoro/Proyecto_Grupo18.git
 
@@ -68,6 +69,8 @@ Link del video: https://youtu.be/UvVduBh19RQ
 En el repositorio: https://github.com/sofiavasqueztoro/Proyecto_Grupo18.git
 
 O en este link: https://www.canva.com/design/DAGyrtD3Y_Y/zrkBFva_3LasQTYU5w3y7w/edit?utm_content=DAGyrtD3Y_Y&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
+
+## Etapa 2:
 
 ## Sección 5. (8%) Trabajo en equipo
 
