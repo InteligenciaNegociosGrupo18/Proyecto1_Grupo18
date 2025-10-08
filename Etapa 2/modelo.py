@@ -192,7 +192,7 @@ def modelo(X_train,y_train,X_test,y_test,y_data,X_data,data_t):
 
     print(f"Nuevas filas agregadas: {len(added_rows)}")
     
-    display(added_rows)           
+   #display(added_rows)           
     # print(added_rows.to_string(index=False))  
 
     # Entrenar de nuevo el modelo con los datos aumentados
@@ -204,7 +204,7 @@ def modelo(X_train,y_train,X_test,y_test,y_data,X_data,data_t):
     )
     pipeline.fit(X_train, y_train)
     y_pred = pipeline.predict(X_test)
-    report_reentreno=classification_report(y_new, y_pred_new, output_dict=True)
+    report_reentreno=classification_report(y_test, y_pred, output_dict=True)
     print(classification_report(y_test, y_pred))
 
     from collections import Counter
