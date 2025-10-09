@@ -52,7 +52,8 @@ def modelo(X_train,y_train,X_test,y_test,y_data,X_data,data_t):
     cm = confusion_matrix(y_test, y_pred)
     disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=np.unique(y_data))
     disp.plot(cmap="Blues", values_format="d")
-    plt.show()
+    plt.tight_layout()
+    plt.savefig("Matriz_de_Confusion_Modelo_Original.png", dpi=300, bbox_inches="tight")
 
     pipeline.fit(X_train, y_train)
     import os
@@ -73,7 +74,8 @@ def modelo(X_train,y_train,X_test,y_test,y_data,X_data,data_t):
     cm = confusion_matrix(y_new, y_pred_new)
     disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=np.unique(y_new))
     disp.plot(cmap="Blues", values_format="d")
-    plt.show()
+    plt.tight_layout()
+    plt.savefig("Matriz_de_Confusion_Datos_Etapa_2.png", dpi=300, bbox_inches="tight")
 
 
 
@@ -116,12 +118,13 @@ def modelo(X_train,y_train,X_test,y_test,y_data,X_data,data_t):
     #Graficamos
     plt.figure(figsize=(6, 4))
     plt.bar(conteo.keys(), conteo.values(), color=['#66b3ff', '#99ff99', '#ffcc99'])
-    plt.title("Distribución de clases en el conjunto de datos final", fontsize=13, fontweight='bold')
+    plt.title("Distribución de clases en el conjunto de datos inicial", fontsize=13, fontweight='bold')
     plt.xlabel("Clase ODS", fontsize=11)
     plt.ylabel("Cantidad de ejemplos", fontsize=11)
     plt.xticks(sorted(conteo.keys()))
     plt.grid(axis='y', linestyle='--', alpha=0.6)
-    plt.show()
+    plt.tight_layout()
+    plt.savefig("Distribucion_clases_inicial.png", dpi=300, bbox_inches="tight")
 
     #Calculamos un estimado de cuantos datos nuevos artificales serian razonables 
     promedio_otras = round((conteo[3] + conteo[4]) / 2, 0)
@@ -157,7 +160,7 @@ def modelo(X_train,y_train,X_test,y_test,y_data,X_data,data_t):
 
     # Prompt para generar datos sintéticos
     prompt = f"""
-    Genera exactaamente 200 opiniones ciudadanas breves (1–2 oraciones), en español de Colombia,
+    Genera exactamente 236 opiniones ciudadanas breves (1–2 oraciones), en español de Colombia,
     realistas y respetuosas, sobre problemáticas locales mapeadas SOLO al ODS 1.
     Definición de cada ODS: ODS 1: Fin de la pobreza, ODS 3: Salud y Bienestar, ODS 4: Educación de calidad
     Requisitos:
@@ -221,7 +224,8 @@ def modelo(X_train,y_train,X_test,y_test,y_data,X_data,data_t):
     plt.ylabel("Cantidad de ejemplos", fontsize=11)
     plt.xticks(sorted(conteo.keys()))
     plt.grid(axis='y', linestyle='--', alpha=0.6)
-    plt.show()
+    plt.tight_layout()
+    plt.savefig("Distribucion_clases_final.png", dpi=300, bbox_inches="tight")
 
 
     # Entrenar de nuevo el modelo con los datos aumentados
@@ -342,7 +346,9 @@ def mostrar_tabla_en_plt(estilo, titulo="Tabla"):
         cell.set_edgecolor('#b3b3b3')
 
     plt.tight_layout()
-    plt.show()
+    plt.tight_layout()
+    nombre_archivo = f"Tabla_Comparativa_{titulo.replace(' ', '_')}.png"
+    plt.savefig(nombre_archivo, dpi=300, bbox_inches="tight")
 
 
 
