@@ -6,7 +6,6 @@ def modelo(X_train,y_train,X_test,y_test,y_data,X_data,data_t):
     import numpy as np
     from TextPreprocessor import TextPreprocessor
     import matplotlib.pyplot as plt
-    from imblearn.over_sampling import SMOTE
     #Definimos el pipeline que vamos a utilizar con Random Forest
     pipeline = Pipeline([
     ('vectorizer', TextPreprocessor(max_features=5000, ngram_range=(1,2))),
@@ -52,11 +51,14 @@ def modelo(X_train,y_train,X_test,y_test,y_data,X_data,data_t):
     cm = confusion_matrix(y_test, y_pred)
     disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=np.unique(y_data))
     disp.plot(cmap="Blues", values_format="d")
+
+    import os
+    os.makedirs("figuras", exist_ok=True)
+
     plt.tight_layout()
-    plt.savefig("Matriz_de_Confusion_Modelo_Original.png", dpi=300, bbox_inches="tight")
+    plt.savefig("figuras/Matriz_de_Confusion_Modelo_Original.png", dpi=300, bbox_inches="tight")
 
     pipeline.fit(X_train, y_train)
-    import os
     path = os.path.join(os.path.dirname(__file__), "Datos_etapa 2.xlsx")
     datos_etapa2 = pd.read_excel(path)
     #datos_etapa2 = pd.read_excel("Datos_etapa 2.xlsx")
@@ -75,7 +77,7 @@ def modelo(X_train,y_train,X_test,y_test,y_data,X_data,data_t):
     disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=np.unique(y_new))
     disp.plot(cmap="Blues", values_format="d")
     plt.tight_layout()
-    plt.savefig("Matriz_de_Confusion_Datos_Etapa_2.png", dpi=300, bbox_inches="tight")
+    plt.savefig("figuras/Matriz_de_Confusion_Datos_Etapa_2.png", dpi=300, bbox_inches="tight")
 
 
 
@@ -124,7 +126,7 @@ def modelo(X_train,y_train,X_test,y_test,y_data,X_data,data_t):
     plt.xticks(sorted(conteo.keys()))
     plt.grid(axis='y', linestyle='--', alpha=0.6)
     plt.tight_layout()
-    plt.savefig("Distribucion_clases_inicial.png", dpi=300, bbox_inches="tight")
+    plt.savefig("figuras/Distribucion_clases_inicial.png", dpi=300, bbox_inches="tight")
 
     #Calculamos un estimado de cuantos datos nuevos artificales serian razonables 
     promedio_otras = round((conteo[3] + conteo[4]) / 2, 0)
@@ -225,7 +227,7 @@ def modelo(X_train,y_train,X_test,y_test,y_data,X_data,data_t):
     plt.xticks(sorted(conteo.keys()))
     plt.grid(axis='y', linestyle='--', alpha=0.6)
     plt.tight_layout()
-    plt.savefig("Distribucion_clases_final.png", dpi=300, bbox_inches="tight")
+    plt.savefig("figuras/Distribucion_clases_final.png", dpi=300, bbox_inches="tight")
 
 
     # Entrenar de nuevo el modelo con los datos aumentados
@@ -237,7 +239,6 @@ def modelo(X_train,y_train,X_test,y_test,y_data,X_data,data_t):
     )
     pipeline_augmented = Pipeline([
         ('vectorizer', TextPreprocessor(max_features=5000, ngram_range=(1,2))),
-        ('smote', SMOTE(random_state=42, sampling_strategy='auto')),  # balancea solo clases minoritarias
         ('model', RandomForestClassifier(
             n_estimators=200,
             max_depth=None,
@@ -347,7 +348,7 @@ def mostrar_tabla_en_plt(estilo, titulo="Tabla"):
 
     plt.tight_layout()
     plt.tight_layout()
-    nombre_archivo = f"Tabla_Comparativa_{titulo.replace(' ', '_')}.png"
+    nombre_archivo = f"figuras/Tabla_Comparativa_{titulo.replace(' ', '_')}.png"
     plt.savefig(nombre_archivo, dpi=300, bbox_inches="tight")
 
 
