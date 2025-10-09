@@ -1,24 +1,22 @@
-
-
 def modelo(X_train,y_train,X_test,y_test,y_data,X_data,data_t):
-    from networkx import display
-    from sklearn.pipeline import Pipeline
+    from imblearn.pipeline import Pipeline
     from sklearn.ensemble import RandomForestClassifier
     from sklearn.metrics import classification_report, confusion_matrix, ConfusionMatrixDisplay
     import pandas as pd
     import numpy as np
     from TextPreprocessor import TextPreprocessor
     import matplotlib.pyplot as plt
+    from imblearn.over_sampling import SMOTE
     #Definimos el pipeline que vamos a utilizar con Random Forest
     pipeline = Pipeline([
-        ('vectorizer', TextPreprocessor(max_features=5000, ngram_range=(1,2))),
-        ('model', RandomForestClassifier(
-            n_estimators=200,
-            max_depth=None,
-            class_weight="balanced",
-            random_state=42
-        ))
-    ])
+    ('vectorizer', TextPreprocessor(max_features=5000, ngram_range=(1,2))),
+    ('model', RandomForestClassifier(
+        n_estimators=200,
+        max_depth=None,
+        class_weight="balanced",
+        random_state=42
+    ))
+])
 
     from sklearn.model_selection import RandomizedSearchCV
     param_grid = {
@@ -78,28 +76,9 @@ def modelo(X_train,y_train,X_test,y_test,y_data,X_data,data_t):
     plt.show()
 
 
-    from collections import Counter
-    conteo = Counter(y_data)
-    print(conteo)
-
-
-    plt.bar(conteo.keys(), conteo.values(), color='skyblue')
-    plt.title("Distribución de clases en el conjunto de entrenamiento")
-    plt.xlabel("Clase ODS")
-    plt.ylabel("Cantidad de ejemplos")
-    plt.show()
-
-    import math
-    promedio_otras = round((conteo[3] + conteo[4]) / 2,0)
-
-    faltan = max(0, promedio_otras - conteo[1])  # cantidad de textos a generar
-    print(f"Queremos que la clase ODS 1 llegue a {promedio_otras} ejemplos.")
-    print(f"Necesitamos generar aproximadamente {faltan} textos nuevos.")
-
 
 
     import os
-    import random
     import json
     #import openai
     from openai import OpenAI
@@ -110,12 +89,50 @@ def modelo(X_train,y_train,X_test,y_test,y_data,X_data,data_t):
     #openai.api_key = secret
 
     import os
-    path = os.path.join(os.path.dirname(__file__), "Datos_etapa 2.xlsx")
-    df = pd.read_excel(path)
-    #RUTA = "Datos_proyecto.xlsx"  
+    path_proyecto = os.path.join(os.path.dirname(__file__), "Datos_proyecto.xlsx")
+    path_etapa2 = os.path.join(os.path.dirname(__file__), "Datos_etapa 2.xlsx")
+
+    df_proyecto = pd.read_excel(path_proyecto)
+    df_etapa2 = pd.read_excel(path_etapa2)
+
+    df_proyecto.columns = df_proyecto.columns.str.strip().str.lower()
+    df_etapa2.columns = df_etapa2.columns.str.strip().str.lower()
+
+    df_proyecto = df_proyecto.rename(columns={"texto": "textos", "ods": "labels"})
+    df_etapa2 = df_etapa2.rename(columns={"texto": "textos", "ods": "labels"})
+
+    df = pd.concat([df_proyecto, df_etapa2], ignore_index=True).drop_duplicates(subset=["textos", "labels"])
+    print(f"Dataset combinado: {len(df)} filas")
+
+    #Primero, queremos observar la distribucion de clases actual de todo el conjunto 
+    import matplotlib.pyplot as plt
+    from collections import Counter
+    import math
+
+    # Contamos las instancias por clase
+    conteo = Counter(df["labels"])
+    print("Distribución de clases:", conteo)
+
+    #Graficamos
+    plt.figure(figsize=(6, 4))
+    plt.bar(conteo.keys(), conteo.values(), color=['#66b3ff', '#99ff99', '#ffcc99'])
+    plt.title("Distribución de clases en el conjunto de datos final", fontsize=13, fontweight='bold')
+    plt.xlabel("Clase ODS", fontsize=11)
+    plt.ylabel("Cantidad de ejemplos", fontsize=11)
+    plt.xticks(sorted(conteo.keys()))
+    plt.grid(axis='y', linestyle='--', alpha=0.6)
+    plt.show()
+
+    #Calculamos un estimado de cuantos datos nuevos artificales serian razonables 
+    promedio_otras = round((conteo[3] + conteo[4]) / 2, 0)
+    faltan = max(0, promedio_otras - conteo[1])
+
+    print(f"\nQueremos que la clase ODS 1 llegue a {conteo[1] + round(faltan/2)} ejemplos.")
+    print(f"Necesitamos generar aproximadamente {round(faltan/2)} textos nuevos.")
+
+
     TEXTO = "textos"                   
     ODS   = "labels"   
-    #df = pd.read_excel(RUTA)
 
     minoritaria = df[ODS].value_counts().idxmin()
     semillas = (
@@ -140,7 +157,7 @@ def modelo(X_train,y_train,X_test,y_test,y_data,X_data,data_t):
 
     # Prompt para generar datos sintéticos
     prompt = f"""
-    Genera 200 opiniones ciudadanas breves (1–2 oraciones), en español de Colombia,
+    Genera exactaamente 200 opiniones ciudadanas breves (1–2 oraciones), en español de Colombia,
     realistas y respetuosas, sobre problemáticas locales mapeadas SOLO al ODS 1.
     Definición de cada ODS: ODS 1: Fin de la pobreza, ODS 3: Salud y Bienestar, ODS 4: Educación de calidad
     Requisitos:
@@ -191,9 +208,21 @@ def modelo(X_train,y_train,X_test,y_test,y_data,X_data,data_t):
     )
 
     print(f"Nuevas filas agregadas: {len(added_rows)}")
-    
-   #display(added_rows)           
-    # print(added_rows.to_string(index=False))  
+
+    #Graficamos la nueva distribucion de las clases frente a todos los datos
+    conteo = Counter(df["labels"])
+    print("Distribución de clases:", conteo)
+
+    #Graficamos
+    plt.figure(figsize=(6, 4))
+    plt.bar(conteo.keys(), conteo.values(), color=['#66b3ff', '#99ff99', '#ffcc99'])
+    plt.title("Distribución de clases en el conjunto de datos final", fontsize=13, fontweight='bold')
+    plt.xlabel("Clase ODS", fontsize=11)
+    plt.ylabel("Cantidad de ejemplos", fontsize=11)
+    plt.xticks(sorted(conteo.keys()))
+    plt.grid(axis='y', linestyle='--', alpha=0.6)
+    plt.show()
+
 
     # Entrenar de nuevo el modelo con los datos aumentados
     X_data = df["textos"]
@@ -202,7 +231,19 @@ def modelo(X_train,y_train,X_test,y_test,y_data,X_data,data_t):
     X_train, X_test, y_train, y_test = train_test_split(
         X_data, y_data, test_size=0.3, random_state=42, stratify=y_data
     )
-    pipeline.fit(X_train, y_train)
+    pipeline_augmented = Pipeline([
+        ('vectorizer', TextPreprocessor(max_features=5000, ngram_range=(1,2))),
+        ('smote', SMOTE(random_state=42, sampling_strategy='auto')),  # balancea solo clases minoritarias
+        ('model', RandomForestClassifier(
+            n_estimators=200,
+            max_depth=None,
+            class_weight="balanced",
+            random_state=42
+        ))
+    ])
+
+    # Entrenamiento
+    pipeline_augmented.fit(X_train, y_train)
     y_pred = pipeline.predict(X_test)
     report_reentreno=classification_report(y_test, y_pred, output_dict=True)
     print(classification_report(y_test, y_pred))
@@ -217,14 +258,14 @@ def modelo(X_train,y_train,X_test,y_test,y_data,X_data,data_t):
     import pandas as pd
     from IPython.display import display
 
-    # === Crear DataFrames a partir de los reportes ===
+    #Crear DataFrames a partir de los reportes
     df_orig = pd.DataFrame(report_aum).transpose()
     df_reent = pd.DataFrame(report_reentreno).transpose()
 
-    # === Seleccionar solo las clases y métricas principales ===
-    clases = [col for col in df_orig.index if col.isdigit()]  # etiquetas numéricas (ej: '1', '3', '4')
+    #Seleccionar solo las clases y métricas principales
+    clases = [col for col in df_orig.index if col.isdigit()]  
 
-    # === Tabla global (macro averages) ===
+    #Tabla global (macro averages)
     tabla_global = pd.DataFrame({
         'Métrica': ['Accuracy', 'Precision (macro)', 'Recall (macro)', 'F1-score (macro)'],
         'Modelo original': [
@@ -241,7 +282,7 @@ def modelo(X_train,y_train,X_test,y_test,y_data,X_data,data_t):
         ]
     }).round(3)
 
-    # === Tabla por clase ===
+    #Tabla por clase
     tabla_clases = pd.DataFrame({
         'Clase': clases,
         'Precisión original': [df_orig.loc[c, 'precision'] for c in clases],
@@ -252,28 +293,58 @@ def modelo(X_train,y_train,X_test,y_test,y_data,X_data,data_t):
         'F1 reentrenado': [df_reent.loc[c, 'f1-score'] for c in clases]
     }).round(3)
 
-    # === Aplicar estilos visuales ===
-    estilo_global = tabla_global.style.set_table_styles([
-        {'selector': 'th', 'props': [('background-color', '#003366'),
-                                    ('color', 'white'),
-                                    ('text-align', 'center'),
-                                    ('font-weight', 'bold')]},
-        {'selector': 'td', 'props': [('text-align', 'center'),
-                                    ('padding', '6px')]},
-        {'selector': 'tr:nth-child(even)', 'props': [('background-color', '#f2f2f2')]}
-    ]).set_caption("Comparación de métricas globales entre el modelo original y el reentrenado")
 
-    estilo_clases = tabla_clases.style.set_table_styles([
-        {'selector': 'th', 'props': [('background-color', '#004c99'),
-                                    ('color', 'white'),
-                                    ('text-align', 'center'),
-                                    ('font-weight', 'bold')]},
-        {'selector': 'td', 'props': [('text-align', 'center'),
-                                    ('padding', '6px')]},
-        {'selector': 'tr:nth-child(even)', 'props': [('background-color', '#f9f9f9')]}
-    ]).set_caption("Comparación por clase (ODS 1, ODS 3, ODS 4)")
+    mostrar_tabla_en_plt(tabla_global, "Comparación global")
+    mostrar_tabla_en_plt(tabla_clases, "Comparación por clase (ODS 1, ODS 3, ODS 4)")
 
-    # === Mostrar ambas tablas ===
-    display(estilo_global)
-    display(estilo_clases)
+import matplotlib.pyplot as plt
+from io import BytesIO
+import pandas as pd
+
+import matplotlib.pyplot as plt
+import pandas as pd
+
+def mostrar_tabla_en_plt(estilo, titulo="Tabla"):
+    # Convertir el estilo HTML en DataFrame legible por pandas
+    html = estilo.to_html()
+    df_simple = pd.read_html(html)[0]
+
+    # Crear figura y ejes
+    filas, columnas = df_simple.shape
+    fig, ax = plt.subplots(figsize=(min(12, columnas * 2), filas * 0.6 + 2))
+    ax.axis('off')
+    ax.set_title(titulo, fontsize=14, fontweight='bold', pad=15, color='#003366')
+
+    # Crear la tabla en Matplotlib
+    tabla = ax.table(
+        cellText=df_simple.values,
+        colLabels=df_simple.columns,
+        cellLoc='center',
+        loc='center'
+    )
+
+    # Ajustar estilos visuales
+    tabla.auto_set_font_size(False)
+    tabla.set_fontsize(10)
+    tabla.scale(1.2, 1.2)  # escala horizontal, vertical
+
+    # Colorear encabezados de columnas
+    for (row, col), cell in tabla.get_celld().items():
+        if row == 0:  # fila de encabezado
+            cell.set_facecolor('#004c99')
+            cell.set_text_props(color='white', fontweight='bold')
+        elif col == 0:  # columna de métricas o clase
+            cell.set_facecolor('#d9d9d9')
+            cell.set_text_props(color='black', fontweight='bold')
+        else:
+            cell.set_facecolor('white')
+
+        cell.set_edgecolor('#b3b3b3')
+
+    plt.tight_layout()
+    plt.show()
+
+
+
+
 

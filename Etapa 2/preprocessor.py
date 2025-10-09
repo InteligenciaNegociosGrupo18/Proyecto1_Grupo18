@@ -5,13 +5,26 @@ def main_preprocessor():
     import subprocess
     import sys
 
-    # Ejecutar pip install desde Python
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "contractions"])
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "inflect"])
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "scikit-plot"])
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "nltk"])
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "openpyxl"])
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "networkx"])
+    def install(package):
+        subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+
+    # =============================
+    # Librerías principales compatibles
+    # =============================
+    # Versiones compatibles probadas:
+    install("numpy==1.24.4")
+    install("scipy==1.10.1")
+    install("pandas==2.1.1")
+    install("scikit-learn==1.3.2")
+    install("imbalanced-learn==0.13.0")
+    install("matplotlib==3.7.2")
+    install("nltk==3.8.1")
+    install("contractions==0.1.73")
+    install("inflect==7.5.0")
+    install("openai==2.2.0")
+    install("ipython==8.15.0")  # para display de DataFrames
+    install("jupyter==1.0.0")
+    install("seaborn==0.12.2")
    
     
     from sklearn.base import BaseEstimator, TransformerMixin
