@@ -1,0 +1,36 @@
+{
+  "instances": [
+    {"textos": "Los programas de subsidio a la vivienda han permitido que familias de bajos ingresos accedan a hogares dignos."},
+    {"textos": "El impulso a los pequeños productores rurales mejora la economía local y reduce la pobreza."},
+    {"textos": "El acceso a microcréditos fomenta la independencia económica de mujeres emprendedoras."},
+    {"textos": "Las transferencias monetarias condicionadas ayudan a mejorar la nutrición infantil en zonas vulnerables."},
+    {"textos": "El fortalecimiento de programas de empleo juvenil contribuye a disminuir la pobreza urbana."},
+    {"textos": "La entrega de kits alimentarios ha mitigado los efectos de la pobreza extrema en comunidades rurales."},
+    {"textos": "El desarrollo de infraestructura básica impulsa el progreso en zonas marginadas."},
+    {"textos": "Los programas de inclusión financiera promueven el acceso de los más pobres a servicios bancarios."},
+    {"textos": "Las alianzas público-privadas ayudan a generar empleo sostenible en sectores rurales."},
+    {"textos": "Las políticas de redistribución económica buscan reducir la desigualdad y erradicar la pobreza extrema."},
+
+    {"textos": "Las campañas de vacunación masiva han reducido significativamente la mortalidad infantil."},
+    {"textos": "El acceso gratuito a medicamentos esenciales mejora la calidad de vida de personas con enfermedades crónicas."},
+    {"textos": "Los centros de salud móviles brindan atención médica en comunidades de difícil acceso."},
+    {"textos": "La capacitación del personal médico mejora la atención de emergencias en zonas rurales."},
+    {"textos": "Los programas de salud mental en escuelas fortalecen el bienestar emocional de los estudiantes."},
+    {"textos": "La promoción de hábitos saludables reduce las enfermedades no transmisibles."},
+    {"textos": "El fortalecimiento del sistema hospitalario garantiza servicios médicos oportunos para todos."},
+    {"textos": "Las políticas de prevención del consumo de tabaco disminuyen las enfermedades respiratorias."},
+    {"textos": "Los programas de control prenatal reducen las complicaciones durante el embarazo."},
+    {"textos": "La vacunación contra enfermedades tropicales protege a las comunidades más vulnerables."},
+
+    {"textos": "El acceso a internet en escuelas rurales promueve la educación digital e inclusiva."},
+    {"textos": "Los programas de formación docente mejoran la calidad del aprendizaje en primaria y secundaria."},
+    {"textos": "Las becas estudiantiles aumentan las oportunidades de acceso a la educación superior."},
+    {"textos": "Las políticas educativas equitativas buscan eliminar las brechas de aprendizaje entre zonas urbanas y rurales."},
+    {"textos": "El fortalecimiento de la educación técnica facilita la inserción laboral de los jóvenes."},
+    {"textos": "Los programas de alfabetización permiten que adultos retomen sus estudios básicos."},
+    {"textos": "La capacitación en competencias digitales impulsa una enseñanza más moderna y participativa."},
+    {"textos": "Las herramientas tecnológicas facilitan el aprendizaje personalizado y colaborativo."},
+    {"textos": "Los programas de inclusión educativa garantizan la participación de estudiantes con discapacidad."},
+    {"textos": "El desarrollo de infraestructura escolar mejora el entorno de aprendizaje de los niños."}
+  ]
+}

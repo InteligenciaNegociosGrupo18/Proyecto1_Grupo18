@@ -1,0 +1,36 @@
+{
+  "instances": [
+    {"textos": "Los programas de microcréditos impulsan el emprendimiento en comunidades rurales vulnerables.", "labels": 1},
+    {"textos": "Las políticas de subsidio al empleo ayudan a las familias a salir de la pobreza extrema.", "labels": 1},
+    {"textos": "La asistencia alimentaria garantiza la seguridad básica de los hogares más necesitados.", "labels": 1},
+    {"textos": "Las cooperativas de ahorro fortalecen la autonomía económica de las mujeres rurales.", "labels": 1},
+    {"textos": "La mejora de infraestructura básica reduce la brecha entre zonas urbanas y rurales.", "labels": 1},
+    {"textos": "El acceso a vivienda digna es esencial para erradicar la pobreza multidimensional.", "labels": 1},
+    {"textos": "Los incentivos a pequeños productores agrícolas incrementan la estabilidad económica familiar.", "labels": 1},
+    {"textos": "La inclusión financiera permite que familias de bajos ingresos accedan a servicios bancarios.", "labels": 1},
+    {"textos": "El fortalecimiento de redes comunitarias mejora la resiliencia ante crisis económicas.", "labels": 1},
+    {"textos": "Los programas sociales enfocados en la niñez previenen ciclos intergeneracionales de pobreza.", "labels": 1},
+
+    {"textos": "Las campañas de vacunación han reducido la mortalidad infantil en regiones rurales.", "labels": 3},
+    {"textos": "El acceso gratuito a medicamentos esenciales mejora la calidad de vida de pacientes crónicos.", "labels": 3},
+    {"textos": "Los programas de salud mental en colegios promueven el bienestar emocional de los jóvenes.", "labels": 3},
+    {"textos": "Las unidades móviles de salud llevan atención médica a comunidades apartadas.", "labels": 3},
+    {"textos": "La promoción de hábitos saludables disminuye las enfermedades cardiovasculares.", "labels": 3},
+    {"textos": "El fortalecimiento de hospitales públicos mejora la cobertura en zonas rurales.", "labels": 3},
+    {"textos": "Los programas de prevención del embarazo adolescente promueven la educación sexual responsable.", "labels": 3},
+    {"textos": "El entrenamiento del personal médico en primeros auxilios reduce la mortalidad por accidentes.", "labels": 3},
+    {"textos": "Las políticas de salud pública reducen la desnutrición infantil.", "labels": 3},
+    {"textos": "Los programas de vacunación contra el COVID-19 fortalecen los sistemas de salud nacionales.", "labels": 3},
+
+    {"textos": "La formación docente continua mejora la calidad educativa en escuelas rurales.", "labels": 4},
+    {"textos": "El acceso equitativo a internet impulsa la educación digital en comunidades apartadas.", "labels": 4},
+    {"textos": "Las becas estudiantiles aumentan la tasa de permanencia en educación superior.", "labels": 4},
+    {"textos": "La infraestructura escolar adecuada mejora el rendimiento académico de los niños.", "labels": 4},
+    {"textos": "Los programas de alfabetización reducen el analfabetismo adulto en zonas rurales.", "labels": 4},
+    {"textos": "La educación técnica fortalece las competencias laborales de los jóvenes.", "labels": 4},
+    {"textos": "El aprendizaje inclusivo garantiza la participación de estudiantes con discapacidad.", "labels": 4},
+    {"textos": "Las herramientas tecnológicas facilitan el aprendizaje personalizado en el aula.", "labels": 4},
+    {"textos": "El intercambio docente internacional promueve la innovación educativa.", "labels": 4},
+    {"textos": "Las políticas educativas enfocadas en la equidad reducen las brechas de aprendizaje.", "labels": 4}
+  ]
+}

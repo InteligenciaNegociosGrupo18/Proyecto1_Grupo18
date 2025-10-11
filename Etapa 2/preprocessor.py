@@ -5,27 +5,35 @@ def main_preprocessor():
     import subprocess
     import sys
 
-    def install(package):
-        subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+    # Ejecutar pip install desde Python
+    required_packages = [
+    "contractions",
+    "inflect",
+    "scikit-plot",
+    "nltk",
+    "openpyxl",
+    "networkx",
+    "pandas",
+    "matplotlib",
+    "scikit-learn",
+    "imbalanced-learn",
+    "joblib",
+    "fastapi",
+    "uvicorn",
+    "lxml",          # para pd.read_html()
+    "html5lib",      # alternativa si falla lxml
+    "ipython",       # para display() en notebooks
+    "openai"         # para generar datos sintéticos
+]
 
-    # =============================
-    # Librerías principales compatibles
-    # =============================
-    # Versiones compatibles probadas:
-    install("numpy==1.24.4")
-    install("scipy==1.10.1")
-    install("pandas==2.1.1")
-    install("scikit-learn==1.3.2")
-    install("imbalanced-learn==0.13.0")
-    install("matplotlib==3.7.2")
-    install("nltk==3.8.1")
-    install("contractions==0.1.73")
-    install("inflect==7.5.0")
-    install("openai==2.2.0")
-    install("ipython==8.15.0")  # para display de DataFrames
-    install("jupyter==1.0.0")
-    install("seaborn==0.12.2")
-   
+    for package in required_packages:
+        try:
+            subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+        except Exception as e:
+            print(f"⚠️ Error instalando {package}: {e}")   
+
+    
+
     
     from sklearn.base import BaseEstimator, TransformerMixin
     import re, unicodedata

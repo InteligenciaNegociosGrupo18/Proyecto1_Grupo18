@@ -261,7 +261,7 @@ def modelo(X_train,y_train,X_test,y_test,y_data,X_data,data_t):
 
     from sklearn.metrics import classification_report
     import pandas as pd
-    from IPython.display import display
+    #from IPython.display import display
 
     #Crear DataFrames a partir de los reportes
     df_orig = pd.DataFrame(report_aum).transpose()
@@ -304,9 +304,6 @@ def modelo(X_train,y_train,X_test,y_test,y_data,X_data,data_t):
 
 import matplotlib.pyplot as plt
 from io import BytesIO
-import pandas as pd
-
-import matplotlib.pyplot as plt
 import pandas as pd
 
 def mostrar_tabla_en_plt(estilo, titulo="Tabla"):

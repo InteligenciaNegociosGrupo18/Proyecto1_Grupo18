@@ -1,90 +1,125 @@
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
-from typing import List
-import pandas as pd
+from pydantic import BaseModel, Field
+from typing import List, Dict, Any
 import joblib
+import pandas as pd
 from sklearn.metrics import precision_score, recall_score, f1_score
-from pipeline import build_pipeline  # importa tu pipeline.py
-from datetime import datetime
+from pipeline import build_pipeline  
 import os
 
 
-def load_model():
-    if not os.path.exists("pipeline_model.joblib"):
-        raise HTTPException(status_code=404, detail="No se encontró el modelo entrenado.")
-    return joblib.load("pipeline_model.joblib")
+MODEL_PATH = os.path.join(os.path.dirname(__file__), "pipeline_model.joblib")
+app = FastAPI(title="API Clasificación ODS", version="2.0")
 
-def save_model(model):
-    """Guarda el modelo actualizado y crea una versión con timestamp."""
-    joblib.dump(model, "pipeline_model.joblib")  
-
-
-class TextInput(BaseModel):
-    textos: str
-
-class LabeledInput(BaseModel):
-    textos: str
-    labels: str
 
 class PredictRequest(BaseModel):
-    instances: List[TextInput]
+    instances: List[Dict[str, Any]] = Field(..., description="Lista de textos para predecir")
+
+class PredictResponse(BaseModel):
+    predictions: List[Any]
 
 class RetrainRequest(BaseModel):
-    instances: List[LabeledInput]
+    instances: List[Dict[str, Any]] = Field(..., description="Lista con textos y labels (ODS)")
 
-app = FastAPI(
-    title="API Analítica de Textos – Etapa 2",
-    description="Predicción y reentrenamiento del modelo de ODS.",
-    version="1.0"
-)
+class RetrainResponse(BaseModel):
+    metrics: Dict[str, float]
 
-@app.get("/")
-def root():
-    return {"mensaje": "API de Analítica de Textos activa"}
+# Funciones auxiliares
+def load_model():
+    if not os.path.exists(MODEL_PATH):
+        raise FileNotFoundError("No se encontró el modelo entrenado (pipeline_model.joblib).")
+    return joblib.load(MODEL_PATH)
 
-@app.post("/predict/")
-def predict(req: PredictRequest):
+def save_model(model):
+    joblib.dump(model, MODEL_PATH)
+
+def prepare_dataframe(instances: List[Dict[str, Any]]) -> pd.DataFrame:
+    df = pd.DataFrame(instances)
+    if "textos" not in df.columns:
+        raise ValueError("El campo 'textos' es obligatorio en el JSON de entrada.")
+    return df
+
+# ENDPOINTS
+@app.get("/health")
+def health():
+
+    return {"status": "ok", "model_loaded": os.path.exists(MODEL_PATH)}
+
+@app.post("/predict", response_model=PredictResponse)
+def predict(request: PredictRequest):
     try:
         model = load_model()
-        df = pd.DataFrame([i.dict() for i in req.instances])
+        df = prepare_dataframe(request.instances)
         preds = model.predict(df["textos"])
-        return {"predicciones": preds.tolist(), "total": len(preds)}
+        return {"predictions": preds.tolist()}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error en predicción: {str(e)}")
+        raise HTTPException(status_code=400, detail=str(e))
 
-
-@app.post("/retrain/")
-def retrain(req: RetrainRequest):
+@app.post("/retrain", response_model=RetrainResponse)
+def retrain(request: RetrainRequest):
     try:
-        df_new = pd.DataFrame([i.dict() for i in req.instances])
-        if not {"textos", "labels"}.issubset(df_new.columns):
-            raise HTTPException(status_code=400, detail="Faltan columnas 'textos' y 'labels'.")
+        df_new = prepare_dataframe(request.instances)
+        if "labels" not in df_new.columns:
+            raise ValueError("Se requiere la columna 'labels' para reentrenar el modelo.")
 
-        # Reentrenar desde cero (full batch replacement)
-        X = df_new["textos"]
-        y = df_new["labels"]
-        new_pipeline = build_pipeline()
-        new_pipeline.fit(X, y)
+        # 1️ Cargar datos históricos
+        base_dir = os.path.dirname(__file__)
+        path_proyecto = os.path.join(base_dir, "Datos_proyecto.xlsx")
+        path_etapa2 = os.path.join(base_dir, "Datos_etapa 2.xlsx")
 
-        # Evaluar (macro-average)
-        preds = new_pipeline.predict(X)
-        precision = precision_score(y, preds, average="macro", zero_division=0)
-        recall = recall_score(y, preds, average="macro", zero_division=0)
-        f1 = f1_score(y, preds, average="macro", zero_division=0)
+        data_frames = []
 
-        # Guardar el modelo actualizado
-        version = save_model(new_pipeline)
+        for path in [path_proyecto, path_etapa2]:
+            if os.path.exists(path):
+                df_hist = pd.read_excel(path)
+                df_hist.columns = df_hist.columns.str.strip().str.lower()
+                df_hist = df_hist.rename(columns={"texto": "textos", "ods": "labels"})
+                data_frames.append(df_hist[["textos", "labels"]])
 
-        return {
-            "mensaje": "Modelo reentrenado exitosamente",
-            "version": version,
-            "muestras": len(df_new),
-            "metricas": {
-                "precision_macro": round(precision, 3),
-                "recall_macro": round(recall, 3),
-                "f1_macro": round(f1, 3)
-            }
+        # Combinar históricos + nuevos datos del JSON
+        if data_frames:
+            df_all = pd.concat(data_frames + [df_new], ignore_index=True).dropna(subset=["textos", "labels"])
+        else:
+            df_all = df_new.copy()
+
+        # Eliminar duplicados
+        df_all = df_all.drop_duplicates(subset=["textos", "labels"]).reset_index(drop=True)
+        print(f"Total de instancias tras combinar: {len(df_all)}")
+
+        X = df_all["textos"]
+        y = df_all["labels"]
+
+        # 2️ Dividir datos (70/30 estratificado)
+        from sklearn.model_selection import train_test_split
+        X_train, X_val, y_train, y_val = train_test_split(
+            X, y, test_size=0.3, random_state=42, stratify=y
+        )
+
+        # 3️ Reentrenar el pipeline
+        pipeline = build_pipeline()
+        pipeline.fit(X_train, y_train)
+
+        # Guardar modelo actualizado
+        save_model(pipeline)
+
+        # 4️ Evaluar métricas de validación
+        y_pred = pipeline.predict(X_val)
+
+        from sklearn.metrics import precision_score, recall_score, f1_score
+        avg = "macro" if len(y.unique()) > 2 else "binary"
+        precision = precision_score(y_val, y_pred, average=avg, zero_division=0)
+        recall = recall_score(y_val, y_pred, average=avg, zero_division=0)
+        f1 = f1_score(y_val, y_pred, average=avg, zero_division=0)
+
+        metrics = {
+            "precision": round(float(precision), 3),
+            "recall": round(float(recall), 3),
+            "f1_score": round(float(f1), 3),
+            "samples": len(y_val)
         }
 
+        print(f"Métricas de validación: {metrics}")
+        return {"metrics": metrics}
+
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error al reentrenar: {str(e)}")
+        raise HTTPException(status_code=400, detail=str(e))
