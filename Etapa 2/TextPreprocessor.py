@@ -5,6 +5,12 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from sklearn.feature_extraction.text import TfidfVectorizer
 
+import os, nltk
+NLTK_DATA_DIR = os.getenv("NLTK_DATA", os.path.join(os.path.dirname(__file__), "nltk_data"))
+if NLTK_DATA_DIR not in nltk.data.path:
+    nltk.data.path.append(NLTK_DATA_DIR)
+
+
 stop_words = set(stopwords.words("spanish"))
 p = inflect.engine()
 class TextPreprocessor(BaseEstimator, TransformerMixin):

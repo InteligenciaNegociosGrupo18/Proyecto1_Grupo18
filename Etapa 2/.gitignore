@@ -1,0 +1,5 @@
+.venv/
+__pycache__/
+*.pyc
+logs_api.txt
+pipeline_model.joblib
